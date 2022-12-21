@@ -12,7 +12,7 @@
 
   <xsl:param name="OUTPUT-DIR"/>
 
-  <xsl:variable name="path2datafile">file:/C:/Git/GitHub/Config2DITA/Source/Descriptions.xml</xsl:variable>
+  <xsl:param name="path2datafile">file:/C:/Git/GitHub/Config2DITA/Source/Descriptions.xml</xsl:param>
   
   <xsl:variable name="valid-targets" select="document($path2datafile)//@varid"/>
 

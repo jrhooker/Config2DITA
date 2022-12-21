@@ -4,6 +4,7 @@ PATHTOPROJECT=$1 #/Source
 OUTPUTPATH=$2 #/Out
 FILENAME=$3 #pnr_cfg_file.xml
 DITAMAPNAME=$4 #pnr_cfg_file.ditamap
+PATH2DATA=$5 #file:/C:/Git/GitHub/Config2DITA/Source/Descriptions.xml
 
 cd ../
 
@@ -41,6 +42,6 @@ net.sf.saxon.Transform ^
 -o:$WORKINGDIR$OUTPUTPATH\temp.xml ^
 -s:$WORKINGDIR$\$PATHTOPROJECT\$FILENAME ^
 -xsl:$WORKINGDIR\depend\custom\generate_topics.xsl ^
-OUTPUT-DIR="$WORKINGDIR$OUTPUTPATH/" FILENAME="$DITAMAPNAME"
+OUTPUT-DIR="$WORKINGDIR$OUTPUTPATH/" FILENAME="$DITAMAPNAME" path2datafile="$PATH2DATA"
 
 cd $WORKINGDIR/batchfiles

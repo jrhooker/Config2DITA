@@ -11,12 +11,10 @@
 
   <xsl:import href="filtering-attribute-resolver.xsl"/>
 
-
+  <xsl:param name="path2datafile">file:/C:/Git/GitHub/Config2DITA/Source/Descriptions.xml</xsl:param>
 
   <xsl:output method="xml" media-type="text/xml" indent="yes" encoding="UTF-8"
     doctype-public="-//Atmel//DTD DITA Mathml Topic//EN" doctype-system="AtmelTopic.dtd"/>
-
-  <xsl:variable name="path2datafile">file:/C:/Git/GitHub/Config2DITA/Source/Descriptions.xml</xsl:variable>
 
   <xsl:variable name="valid-targets" select="document($path2datafile)//@varid"/>
 
