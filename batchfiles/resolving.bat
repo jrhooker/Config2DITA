@@ -1,6 +1,6 @@
 set PATHTOPROJECT=\Source
 set OUTPUTPATH=\Out
-set FILENAME=pnr_cfg_file.xml
+set FILENAME=pnr_cfg_file2.xml
 set DITAMAPNAME=pnr_cfg_file.ditamap
 
 cd ..\

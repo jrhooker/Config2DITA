@@ -12,6 +12,10 @@
 
   <xsl:param name="OUTPUT-DIR"/>
 
+  <xsl:variable name="path2datafile">file:/C:/Git/GitHub/Config2DITA/Source/Descriptions.xml</xsl:variable>
+  
+  <xsl:variable name="valid-targets" select="document($path2datafile)//@varid"/>
+
   <xsl:variable name="OUTPUT-DIR-VAR">
     <xsl:choose>
       <xsl:when test="contains($OUTPUT-DIR, 'c:')">
@@ -50,16 +54,17 @@
   </xsl:template>
 
   <xsl:template match="section">
+    
+    <xsl:variable name="local-targets" select="descendant-or-self::*/@id_tag" />
+    
+    <xsl:if test="$local-targets = $valid-targets">
     <xsl:element name="topicref">
       <xsl:attribute name="navtitle">
         <xsl:value-of select="@name"/>
-      </xsl:attribute>
-      <xsl:if test="@visible = 'false' or child::subsection[1][contains(name,'Block Information')]/@visible = 'false'">
-        <xsl:attribute name="ishcondition">audience=Internal</xsl:attribute>
-      </xsl:if>     
+      </xsl:attribute>    
       <xsl:attribute name="href">
         <xsl:choose>
-          <xsl:when test="@id_tag"><xsl:value-of select="concat(@id_tag, '.xml')"/></xsl:when>
+          <xsl:when test="@id_tag"><xsl:value-of select="concat(@id_tag, '.xml')"/></xsl:when>         
           <xsl:otherwise>
             <xsl:variable name="xml-filename">
               <xsl:call-template name="create-id"></xsl:call-template>
@@ -70,24 +75,27 @@
       </xsl:attribute>
       <xsl:apply-templates/>
     </xsl:element>  
-
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="subsection">
     <xsl:choose>
       <xsl:when test="not(@name = 'Block Information')">
+        
+        <xsl:variable name="local-targets" select="descendant-or-self::*/@id_tag" />
+        
+        <xsl:if test="$local-targets = $valid-targets">
+        
         <xsl:choose>
           <xsl:when test="child::field"><!-- Not all subsections have fields; some just have information blocks -->
             <xsl:element name="topicref">
               <xsl:attribute name="navtitle">
                 <xsl:value-of select="@name"/>
-              </xsl:attribute>
-              <xsl:if test="@visible = 'false'">
-                <xsl:attribute name="ishcondition">audience=Internal</xsl:attribute>
-              </xsl:if>
+              </xsl:attribute>          
               <xsl:attribute name="href">
                 <xsl:choose>
                   <xsl:when test="@id_tag"><xsl:value-of select="concat(@id_tag, '.xml')"/></xsl:when>
+                  <xsl:when test="contains(@name,'Block Settings')"><xsl:value-of select="concat(parent::*/@id_tag, '_Block_Settings.xml')"/></xsl:when>
                   <xsl:otherwise>
                     <xsl:variable name="xml-filename">
                       <xsl:call-template name="create-id"></xsl:call-template>
@@ -118,8 +126,10 @@
             </xsl:element>
           </xsl:otherwise>
         </xsl:choose>
+        </xsl:if>
       </xsl:when>
-    </xsl:choose>    
+    </xsl:choose>  
+    
   </xsl:template>
 
   <xsl:template match="content">
