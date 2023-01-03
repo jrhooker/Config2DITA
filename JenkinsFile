@@ -1,0 +1,58 @@
+#!/usr/bin/env groovy
+echo "ModuleName: ${params.ModuleName}"
+echo "PubName: ${params.PubName}"
+echo "DockerVersion: ${params.DockerVersion}"
+
+pipeline {
+    agent none
+
+    stages {
+        stage('Build') {
+            agent {
+                docker {
+                    alwaysPull true
+                    image "microchip/marcom-sdl/docbook2dita:${params.DockerVersion}"
+                    registryUrl 'https://artifacts.microchip.com:7999/'
+                    registryCredentialsId 'buildmaster-ad'
+                }
+            }
+            steps {
+                script {
+                    writeFile( file:"./build.properties", text:"module=${params.ModuleName}\r\nsdlrepopath=${params.SDLRepoPath}")
+                    echo readFile("./build.properties")
+
+                    sh 'chmod +x retrieve.sh'
+                    sh './retrieve.sh'
+
+                    sh 'chmod +x build.sh'
+                    sh "./build.sh \"${params.PubName}\" \"${params.KeywordPrefix}\""
+
+                    stash includes: 'build.properties', name: 'buildproperties'
+                    stash includes: 'dita-generated/*', name: 'dita-generated'
+                }
+            }
+        }
+
+        stage('Push') {
+            agent {
+                docker {
+                    image "microchip/marcom-sdl/docbook2dita:${params.DockerVersion}"
+                    registryUrl 'https://artifacts.microchip.com:7999/'
+                    registryCredentialsId 'buildmaster-ad'
+                }
+            }
+            steps {
+                script {
+                    sh 'rm -rf dita-generated'
+                    sh 'rm -f dita-files*.zip'
+
+                    unstash 'buildproperties'
+                    unstash 'dita-generated'
+
+                    sh 'chmod +x publish.sh'
+                    sh './publish.sh'
+                }
+            }
+        }
+    }
+}
