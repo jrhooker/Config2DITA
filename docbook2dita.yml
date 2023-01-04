@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: docbook2dita
+  labels:
+    app: 'docbook2dita'
+spec:
+  containers:
+    - name: docbook2dita
+      image: artifacts.microchip.com:7999/microchip/marcom-sdl/docbook2dita:latest
+      imagePullPolicy: Always
+      command: ['cat']
+      tty: true
